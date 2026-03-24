@@ -1,7 +1,13 @@
-import { Column, CreateDateColumn, Entity } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('sexos.sexo')
 export class Sexo {
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({ type: 'varchar', nullable: false, length: 30 })
