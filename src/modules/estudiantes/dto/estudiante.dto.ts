@@ -25,7 +25,7 @@ export class CreateEstudianteDto {
 
   @IsNumber()
   @IsNotEmpty()
-  sexo_id: number;
+  readonly sexo_id: number;
 
   @IsString()
   @IsNotEmpty()
@@ -33,7 +33,7 @@ export class CreateEstudianteDto {
 
   @IsNumber()
   @IsNotEmpty()
-  etnia_id: number;
+  readonly etnia_id: number;
 
   @IsDate()
   @IsOptional()
