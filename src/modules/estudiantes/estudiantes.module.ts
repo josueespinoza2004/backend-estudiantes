@@ -3,7 +3,7 @@ import { EstudiantesController } from './controllers/estudiantes.controller';
 import { EstudiantesService } from './services/estudiantes.service';
 
 @Module({
-  imports: [EstudiantesModule],
+  imports: [],
   controllers: [EstudiantesController],
   providers: [EstudiantesService],
   exports: [],
