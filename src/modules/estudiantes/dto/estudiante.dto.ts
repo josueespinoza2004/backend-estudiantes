@@ -43,3 +43,5 @@ export class CreateEstudianteDto {
   @IsOptional()
   updated_at: Date;
 }
+
+export class UpdateEstudianteDto extends CreateEstudianteDto {}

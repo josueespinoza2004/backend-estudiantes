@@ -5,9 +5,13 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { EstudiantesService } from '../services/estudiantes.service';
-import { CreateEstudianteDto } from '../dto/estudiante.dto';
+import {
+  CreateEstudianteDto,
+  UpdateEstudianteDto,
+} from '../dto/estudiante.dto';
 
 @Controller('estudiantes')
 export class EstudiantesController {
@@ -30,6 +34,21 @@ export class EstudiantesController {
     const datos = {
       data: estudiante,
       message: 'Registro agregado con exito',
+    };
+
+    return datos;
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() estudianteDto: UpdateEstudianteDto,
+  ) {
+    const estudiante = await this.estudianteService.update(id, estudianteDto);
+
+    const datos = {
+      data: estudiante,
+      message: 'Registro actualizado con exito',
     };
 
     return datos;
