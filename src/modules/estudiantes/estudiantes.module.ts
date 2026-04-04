@@ -10,6 +10,6 @@ import { Etnia } from '../etnias/entities/etnia.entity';
   imports: [TypeOrmModule.forFeature([Estudiante, Etnia, Sexo])],
   controllers: [EstudiantesController],
   providers: [EstudiantesService],
-  exports: [TypeOrmModule],
+  exports: [EstudiantesModule, TypeOrmModule],
 })
 export class EstudiantesModule {}

@@ -10,7 +10,7 @@ import {
 import { Sexo } from '../../sexos/entities/sexo.entity';
 import { Etnia } from '../../etnias/entities/etnia.entity';
 
-@Entity('estudiantes.estudiante')
+@Entity({ schema: 'estudiantes', name: 'estudiante' })
 export class Estudiante {
   @PrimaryGeneratedColumn('increment')
   id?: number;
