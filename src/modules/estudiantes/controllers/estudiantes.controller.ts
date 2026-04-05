@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -52,5 +53,14 @@ export class EstudiantesController {
     };
 
     return datos;
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    await this.estudianteService.delete(id);
+
+    return {
+      message: 'Registro eliminado con exito',
+    };
   }
 }

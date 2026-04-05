@@ -60,6 +60,18 @@ export class EstudiantesService {
     }
   }
 
+  async delete(id: number) {
+    try {
+      const exists = await this.estudianteRepo.existsBy({ id });
+      if (!exists) {
+        throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
+      }
+      await this.estudianteRepo.delete(id);
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
   private handleDBException(error: any) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (error.code === '23505') throw new BadRequestException(error.detail);
