@@ -5,7 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  Post,
+  // Post,
   Put,
 } from '@nestjs/common';
 import { EstudiantesService } from '../services/estudiantes.service';
@@ -13,6 +13,7 @@ import {
   CreateEstudianteDto,
   UpdateEstudianteDto,
 } from '../dto/estudiante.dto';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('estudiantes')
 export class EstudiantesController {
@@ -28,8 +29,9 @@ export class EstudiantesController {
     return this.estudianteService.getOne(id);
   }
 
-  @Post()
-  async create(@Body() estudianteDto: CreateEstudianteDto) {
+  // @Post()
+  @MessagePattern({ cmd: 'create_student' })
+  async create(@Payload() estudianteDto: CreateEstudianteDto) {
     const estudiante = await this.estudianteService.create(estudianteDto);
 
     const datos = {
