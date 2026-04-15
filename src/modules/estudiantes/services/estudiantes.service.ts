@@ -27,8 +27,16 @@ export class EstudiantesService {
     return this.estudianteRepo.find();
   }
 
-  getOne(id: number) {
-    return `Esto retorna el id ${id}`;
+  async getOne(id: number) {
+    const estudiante = await this.estudianteRepo.findOne({
+      where: { id },
+    });
+
+    if (!estudiante) {
+      throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
+    }
+
+    return estudiante;
   }
 
   async create(estudianteDto: CreateEstudianteDto) {

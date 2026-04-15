@@ -2,7 +2,7 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
+  // Get,
   Param,
   ParseIntPipe,
   // Post,
@@ -25,8 +25,9 @@ export class EstudiantesController {
     return this.estudianteService.getAll();
   }
 
-  @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  // @Get(':id')
+  @MessagePattern({ cmd: 'get_student' })
+  getOne(@Payload() id: number) {
     return this.estudianteService.getOne(id);
   }
 
