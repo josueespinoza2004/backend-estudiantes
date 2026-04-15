@@ -23,8 +23,8 @@ export class EstudiantesService {
     private readonly sexoRepo: Repository<Sexo>,
   ) {}
 
-  getAll() {
-    return `Endpoint para getAll`;
+  async getAll(): Promise<Estudiante[]> {
+    return this.estudianteRepo.find();
   }
 
   getOne(id: number) {

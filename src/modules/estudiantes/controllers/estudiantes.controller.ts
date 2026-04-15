@@ -19,7 +19,8 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 export class EstudiantesController {
   constructor(private readonly estudianteService: EstudiantesService) {}
 
-  @Get()
+  // @Get()
+  @MessagePattern({ cmd: 'get_all_students' })
   getAll() {
     return this.estudianteService.getAll();
   }
