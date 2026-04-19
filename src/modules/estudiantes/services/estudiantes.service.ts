@@ -7,8 +7,8 @@ import { Etnia } from 'src/modules/etnias/entities/etnia.entity';
 import { Sexo } from 'src/modules/sexos/entities/sexo.entity';
 import { UpdateEstudianteDto } from '../dto/estudiante.dto';
 import {
-  BadRequestException,
-  InternalServerErrorException,
+  // BadRequestException,
+  // InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common/exceptions';
 
@@ -54,22 +54,13 @@ export class EstudiantesService {
   }
 
   async update(id: number, estudianteDto: UpdateEstudianteDto) {
-    const estudiante = await this.estudianteRepo.findOne({ where: { id } });
+    const row = await this.getOne(id);
 
-    if (!estudiante) {
-      throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
-    }
+    const mergeData = this.estudianteRepo.merge(row, estudianteDto);
 
-    try {
-      this.estudianteRepo.merge(estudiante, estudianteDto);
-      await this.estudianteRepo.save(estudiante);
+    const updateData = await this.estudianteRepo.save(mergeData);
 
-      return {
-        data: estudiante,
-      };
-    } catch (error) {
-      this.handleDBException(error);
-    }
+    return updateData;
   }
 
   async delete(id: number, payload: CreateEstudianteDto) {
@@ -84,14 +75,14 @@ export class EstudiantesService {
     return row;
   }
 
-  private handleDBException(error: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (error.code === '23505') throw new BadRequestException(error.detail);
+  // private handleDBException(error: any) {
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  //   if (error.code === '23505') throw new BadRequestException(error.detail);
 
-    console.error(error);
+  //   console.error(error);
 
-    throw new InternalServerErrorException(
-      'Error inesperado, verifique los registros del servidor',
-    );
-  }
+  //   throw new InternalServerErrorException(
+  //     'Error inesperado, verifique los registros del servidor',
+  //   );
+  // }
 }
