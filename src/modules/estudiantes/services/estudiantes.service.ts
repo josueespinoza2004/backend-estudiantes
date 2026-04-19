@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Estudiante } from '../entities/estudiante.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateEstudianteDto } from '../dto/estudiante.dto';
 import { Etnia } from 'src/modules/etnias/entities/etnia.entity';
 import { Sexo } from 'src/modules/sexos/entities/sexo.entity';
@@ -21,22 +21,26 @@ export class EstudiantesService {
     private readonly etniaRepo: Repository<Etnia>,
     @InjectRepository(Sexo)
     private readonly sexoRepo: Repository<Sexo>,
+    private readonly dataSource: DataSource,
   ) {}
 
-  async getAll(): Promise<Estudiante[]> {
-    return this.estudianteRepo.find();
+  async getAll() {
+    const rows = this.dataSource
+      .getRepository(Estudiante)
+      .createQueryBuilder('estudiantes')
+      .where('estudiantes.id is not null');
+
+    return await rows.getMany();
   }
 
   async getOne(id: number) {
-    const estudiante = await this.estudianteRepo.findOne({
-      where: { id },
-    });
+    const row = await this.estudianteRepo.findOne({ where: { id: id } });
 
-    if (!estudiante) {
-      throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
+    if (!row) {
+      throw new NotFoundException(`No se encuentra el registro ${id}`);
     }
 
-    return estudiante;
+    return row;
   }
 
   async create(estudianteDto: CreateEstudianteDto) {
@@ -68,16 +72,16 @@ export class EstudiantesService {
     }
   }
 
-  async delete(id: number) {
-    try {
-      const exists = await this.estudianteRepo.existsBy({ id });
-      if (!exists) {
-        throw new NotFoundException(`Estudiante con id ${id} no encontrado`);
-      }
-      await this.estudianteRepo.delete(id);
-    } catch (error) {
-      this.handleDBException(error);
-    }
+  async delete(id: number, payload: CreateEstudianteDto) {
+    const row = await this.getOne(id);
+
+    const mergeData = this.estudianteRepo.merge(row, payload);
+
+    const updateData = await this.estudianteRepo.save(mergeData);
+
+    await this.estudianteRepo.remove(updateData);
+
+    return row;
   }
 
   private handleDBException(error: any) {

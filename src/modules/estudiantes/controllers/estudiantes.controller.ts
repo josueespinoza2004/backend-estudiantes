@@ -1,12 +1,9 @@
 import {
   Body,
   Controller,
-  Delete,
   // Get,
-  Param,
   ParseIntPipe,
   // Post,
-  Put,
 } from '@nestjs/common';
 import { EstudiantesService } from '../services/estudiantes.service';
 import {
@@ -19,19 +16,22 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 export class EstudiantesController {
   constructor(private readonly estudianteService: EstudiantesService) {}
 
-  // @Get()
   @MessagePattern({ cmd: 'get_all_students' })
-  getAll() {
-    return this.estudianteService.getAll();
+  async getAll() {
+    const rows = await this.estudianteService.getAll();
+
+    const datos = {
+      data: rows,
+      count: rows.length,
+    };
+    return datos;
   }
 
-  // @Get(':id')
-  @MessagePattern({ cmd: 'get_student' })
-  getOne(@Payload() id: number) {
+  @MessagePattern({ cmd: 'get_one_student' })
+  getOne(@Payload(ParseIntPipe) id: number) {
     return this.estudianteService.getOne(id);
   }
 
-  // @Post()
   @MessagePattern({ cmd: 'create_student' })
   async create(@Payload() estudianteDto: CreateEstudianteDto) {
     const estudiante = await this.estudianteService.create(estudianteDto);
@@ -44,10 +44,10 @@ export class EstudiantesController {
     return datos;
   }
 
-  @Put(':id')
+  @MessagePattern({ cmd: 'update_student' })
   async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() estudianteDto: UpdateEstudianteDto,
+    @Payload()
+    { id, estudianteDto }: { id: number; estudianteDto: UpdateEstudianteDto },
   ) {
     const estudiante = await this.estudianteService.update(id, estudianteDto);
 
@@ -59,12 +59,8 @@ export class EstudiantesController {
     return datos;
   }
 
-  @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
-    await this.estudianteService.delete(id);
-
-    return {
-      message: 'Registro eliminado con exito',
-    };
+  @MessagePattern({ cmd: 'remove_student' })
+  remove(@Payload(ParseIntPipe) id: number, payload: CreateEstudianteDto) {
+    return this.estudianteService.delete(id, payload);
   }
 }
