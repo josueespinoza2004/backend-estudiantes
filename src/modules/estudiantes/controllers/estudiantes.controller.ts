@@ -53,7 +53,7 @@ export class EstudiantesController {
 
     const datos = {
       data: estudiante,
-      message: 'Registro actualizado con exito',
+      message: 'El registro ha sido actualizado con exito',
     };
 
     return datos;
